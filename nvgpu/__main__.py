@@ -8,7 +8,7 @@ def parse_args():
     subparsers.required = True
     subparsers.dest = 'command'
     parser_predict = subparsers.add_parser('available')
-    parser_predict.add_argument('-l', '--limit', default=None,
+    parser_predict.add_argument('-l', '--limit', default=None, type=int,
         help='Max number of GPUs')
 
     return parser.parse_args()
