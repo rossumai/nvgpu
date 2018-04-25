@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='nvgpu',
-      version='0.1',
+      version='0.1.1',
       description='NVIDIA GPU tools',
       url='https://github.com/rossumai/nvgpu',
       author='Bohumir Zamecnik, Rossum',

@@ -61,5 +61,10 @@ nvgpu.gpu_info()
 ]
 ```
 
-TODO:
+## Author
+
+- Bohumír Zámečník, [Rossum, Ltd.](https://rossum.ai/)
+- License: MIT
+
+## TODO
 - order GPUs by priority (decreasing power, decreasing free memory)
