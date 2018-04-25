@@ -33,6 +33,6 @@ setup(name='nvgpu',
       ],
       entry_points={
           'console_scripts': [
-              'nvgpu_tools = nvgpu.__main__:main'
+              'nvgpu = nvgpu.__main__:main'
           ]
       },)
