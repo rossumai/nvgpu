@@ -13,6 +13,7 @@ def device_status(device_index):
     handle = nv.nvmlDeviceGetHandleByIndex(device_index)
     device_name = nv.nvmlDeviceGetName(handle)
     nv_procs = nv.nvmlDeviceGetComputeRunningProcesses(handle)
+    utilization = nv.nvmlDeviceGetUtilizationRates(handle).gpu
     pids = []
     users = []
     dates = []
@@ -30,22 +31,24 @@ def device_status(device_index):
         'is_available': len(pids) == 0,
         'pids': ','.join([str(pid) for pid in pids]),
         'users': ','.join(users),
-        'running_since': arrow.get(min(dates)).humanize() if len(dates) > 0 else None
+        'running_since': arrow.get(min(dates)).humanize() if len(dates) > 0 else None,
+        'utilization': utilization
     }
 
 def device_table():
     with nvml_context():
         device_count = nv.nvmlDeviceGetCount()
         rows = [device_status(device_index) for device_index in range(device_count)]
-        df = pd.DataFrame(rows, columns=['is_available', 'type', 'users', 'running_since', 'pids'])
+        df = pd.DataFrame(rows, columns=['is_available', 'type', 'utilization', 'users', 'running_since', 'pids'])
         return df
 
 def pretty_list_gpus():
     df = device_table()
-    df['available'] = df['is_available'].apply(lambda a: '[ ]' if a else '[~]')
-    for col in ['available', 'type', 'users', 'running_since', 'pids']:
+    df['status'] = df['is_available'].apply(lambda a: '[ ]' if a else '[~]')
+    df['util.'] = df['utilization'].apply(lambda u: '%02s %%' % u)
+    for col in ['status', 'type', 'util.', 'users', 'running_since', 'pids']:
         df[col] = [colored(row[col], 'green') if row['is_available'] else colored(row[col], 'red') for i, row in df.iterrows()]
-    df = df[['available', 'type', 'users', 'running_since', 'pids']]
+    df = df[['status', 'type', 'util.', 'users', 'running_since', 'pids']]
     print(tabulate(df, headers='keys'))
 
 if __name__ == '__main__':
