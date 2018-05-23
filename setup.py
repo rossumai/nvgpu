@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='nvgpu',
-      version='0.1.1',
+      version='0.2',
       description='NVIDIA GPU tools',
       url='https://github.com/rossumai/nvgpu',
       author='Bohumir Zamecnik, Rossum',
@@ -10,6 +10,12 @@ setup(name='nvgpu',
       packages=['nvgpu'],
       zip_safe=False,
       install_requires=[
+        'arrow',
+        'nvidia-ml-py',
+        'pandas',
+        'psutil',
+        'termcolor',
+        'tabulate',
       ],
       setup_requires=['setuptools-markdown'],
       long_description_markdown_filename='README.md',
