@@ -34,13 +34,13 @@ Print pretty colored table of devices, availability, users, processes:
 
 ```
 $ nvgpu list
-    status    type                 util.    users    running_since    pids
---  --------  -------------------  -------  -------  ---------------  ------
+    status    type                 util.    users    running_since    pids    cmd
+--  --------  -------------------  -------  -------  ---------------  ------  --------
  0  [ ]       GeForce GTX 1070      0 %              None             
- 1  [~]       GeForce GTX 1080 Ti   0 %     alice    2 days ago       19028
- 2  [~]       GeForce GTX 1080 Ti   0 %     bob      14 hours ago     8479
- 3  [~]       GeForce GTX 1070     46 %     bob      7 days ago       20883
- 4  [~]       GeForce GTX 1070     35 %     bob      7 days ago       26228
+ 1  [~]       GeForce GTX 1080 Ti   0 %     alice    2 days ago       19028   jupyter
+ 2  [~]       GeForce GTX 1080 Ti   0 %     bob      14 hours ago     8479    jupyter
+ 3  [~]       GeForce GTX 1070     46 %     bob      7 days ago       20883   train.py
+ 4  [~]       GeForce GTX 1070     35 %     bob      7 days ago       26228   evaluate.py
  5  [~]       GeForce GTX 1080 Ti   0 %     ?        None             9305
  6  [ ]       GeForce GTX 1080 Ti   0 %              None             
 ```
