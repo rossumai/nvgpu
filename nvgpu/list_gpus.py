@@ -60,6 +60,8 @@ def pretty_list_gpus():
     df = device_table()
     df['status'] = df['is_available'].apply(lambda a: '[ ]' if a else '[~]')
     df['util.'] = df['utilization'].apply(lambda u: '%03s %%' % u)
+    for col in ['running_since', 'cmd']:
+        df[col] = df[col].apply(lambda v: v if v is not None else '')
     for col in ['status', 'type', 'util.', 'users', 'running_since', 'pids', 'cmd']:
         df[col] = [colored(row[col], 'green') if row['is_available'] else colored(row[col], 'red') for i, row in df.iterrows()]
     df = df[['status', 'type', 'util.', 'users', 'running_since', 'pids', 'cmd']]
