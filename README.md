@@ -48,6 +48,12 @@ $ nvgpu list
  6  [ ]       GeForce GTX 1080 Ti   0 %          44    139
 ```
 
+Or shortcut:
+
+```
+$ nvl
+```
+
 Python API:
 
 ```
