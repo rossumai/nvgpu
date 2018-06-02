@@ -12,6 +12,9 @@ It's a quick and dirty solution calling `nvidia-smi` and parsing its output.
 We can take one or more GPUs availabile for computation based on relative
 memory usage, ie. it is OK with Xorg taking a few MB.
 
+In addition we have a fancy table of GPU with more information taken by
+python binding to NVML.
+
 ## Installing
 
 ```
@@ -34,15 +37,15 @@ Print pretty colored table of devices, availability, users, processes:
 
 ```
 $ nvgpu list
-    status    type                 util.    users    running_since    pids    cmd
---  --------  -------------------  -------  -------  ---------------  ------  --------
- 0  [ ]       GeForce GTX 1070      0 %              None             
- 1  [~]       GeForce GTX 1080 Ti   0 %     alice    2 days ago       19028   jupyter
- 2  [~]       GeForce GTX 1080 Ti   0 %     bob      14 hours ago     8479    jupyter
- 3  [~]       GeForce GTX 1070     46 %     bob      7 days ago       20883   train.py
- 4  [~]       GeForce GTX 1070     35 %     bob      7 days ago       26228   evaluate.py
- 5  [~]       GeForce GTX 1080 Ti   0 %     ?        None             9305
- 6  [ ]       GeForce GTX 1080 Ti   0 %              None             
+    status    type                 util.      temp.    MHz  users    since    pids    cmd
+--  --------  -------------------  -------  -------  -----  -------  ---------------  ------  --------
+ 0  [ ]       GeForce GTX 1070      0 %          44    139                          
+ 1  [~]       GeForce GTX 1080 Ti   0 %          44    139  alice    2 days ago       19028   jupyter
+ 2  [~]       GeForce GTX 1080 Ti   0 %          44    139  bob      14 hours ago     8479    jupyter
+ 3  [~]       GeForce GTX 1070     46 %          54   1506  bob      7 days ago       20883   train.py
+ 4  [~]       GeForce GTX 1070     35 %          64   1480  bob      7 days ago       26228   evaluate.py
+ 5  [!]       GeForce GTX 1080 Ti   0 %          44    139  ?                         9305
+ 6  [ ]       GeForce GTX 1080 Ti   0 %          44    139
 ```
 
 Python API:
