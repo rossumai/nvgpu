@@ -9,6 +9,7 @@ from termcolor import colored
 
 from nvgpu.nvml import nvml_context
 
+
 def device_status(device_index):
     handle = nv.nvmlDeviceGetHandleByIndex(device_index)
     device_name = nv.nvmlDeviceGetName(handle)
@@ -57,20 +58,41 @@ def device_table():
     with nvml_context():
         device_count = nv.nvmlDeviceGetCount()
         rows = [device_status(device_index) for device_index in range(device_count)]
-        df = pd.DataFrame(rows, columns=['is_available', 'type', 'utilization', 'clock_mhz', 'temperature', 'users', 'running_since', 'pids', 'cmd'])
+        df = pd.DataFrame(rows, columns=[
+            'is_available', 'type', 'utilization', 'clock_mhz', 'temperature', 'users', 'running_since', 'pids', 'cmd'
+        ])
         return df
 
 def pretty_list_gpus():
     df = device_table()
-    df['status'] = df['is_available'].apply(lambda a: '[ ]' if a else '[~]')
+    def make_status(row):
+        if row['users'] == '?':
+            return '[!]'
+        elif row['is_available']:
+            return '[ ]'
+        else:
+            return '[~]'
+    def color_by_status(status):
+        if status == '[ ]':
+            return 'green'
+        elif status == '[~]':
+            return 'blue'
+        elif status == '[!]':
+            return 'red'
+        else:
+            raise ValueError(status)
+    df['status'] = df.apply(make_status, axis=1)
+    df['color'] = df['status'].apply(color_by_status)
     df['util.'] = df['utilization'].apply(lambda u: '%03s %%' % u)
     df['MHz'] = df['clock_mhz']
     df['temp.'] = df['temperature']
-    for col in ['running_since', 'cmd']:
+    df['since'] = df['running_since']
+    for col in ['since', 'cmd']:
         df[col] = df[col].apply(lambda v: v if v is not None else '')
-    for col in ['status', 'type', 'util.', 'temp.', 'MHz', 'users', 'running_since', 'pids', 'cmd']:
-        df[col] = [colored(row[col], 'green') if row['is_available'] else colored(row[col], 'red') for i, row in df.iterrows()]
-    df = df[['status', 'type', 'util.', 'temp.', 'MHz', 'users', 'running_since', 'pids', 'cmd']]
+    cols = ['status', 'type', 'util.', 'temp.', 'MHz', 'users', 'since', 'pids', 'cmd']
+    for col in cols:
+        df[col] = [colored(row[col], row['color']) for i, row in df.iterrows()]
+    df = df[[col for col in cols if col not in ['color']]]
     print(tabulate(df, headers='keys'))
 
 if __name__ == '__main__':
