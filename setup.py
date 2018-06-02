@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='nvgpu',
-      version='0.5',
+      version='0.5.1',
       description='NVIDIA GPU tools',
       url='https://github.com/rossumai/nvgpu',
       author='Bohumir Zamecnik, Rossum',
@@ -40,6 +40,6 @@ setup(name='nvgpu',
       entry_points={
           'console_scripts': [
               'nvgpu = nvgpu.__main__:main',
-              'nvl = nvgpu.list_gpus.pretty_list_gpus'
+              'nvl = nvgpu.list_gpus:pretty_list_gpus'
           ]
       },)
