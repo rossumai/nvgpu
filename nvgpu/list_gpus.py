@@ -30,7 +30,7 @@ def device_status(device_index):
             dates.append(proc.create_time())
             if cmd is None:
                 cmd = parse_cmd_roughly(proc.cmdline())
-        except psutil._exceptions.NoSuchProcess:
+        except psutil.NoSuchProcess:
             users.append('?')
     return {
         'type': device_name,
