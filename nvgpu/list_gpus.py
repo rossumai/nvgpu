@@ -54,17 +54,18 @@ def parse_cmd_roughly(args):
     else:
         return cmdline if len(cmdline) <= 25 else cmdline[:25] + '...'
 
-def device_table():
+def device_statuses():
     with nvml_context():
         device_count = nv.nvmlDeviceGetCount()
-        rows = [device_status(device_index) for device_index in range(device_count)]
-        df = pd.DataFrame(rows, columns=[
-            'is_available', 'type', 'utilization', 'clock_mhz', 'temperature', 'users', 'running_since', 'pids', 'cmd'
-        ])
-        return df
+        return [device_status(device_index) for device_index in range(device_count)]
 
-def pretty_list_gpus():
-    df = device_table()
+def device_table(rows):
+    df = pd.DataFrame(rows, columns=[
+        'is_available', 'type', 'utilization', 'clock_mhz', 'temperature', 'users', 'running_since', 'pids', 'cmd'
+    ])
+    return df
+
+def format_table(df):
     def make_status(row):
         if row['users'] == '?':
             return '[!]'
@@ -93,7 +94,13 @@ def pretty_list_gpus():
     for col in cols:
         df[col] = [colored(row[col], row['color']) for i, row in df.iterrows()]
     df = df[[col for col in cols if col not in ['color']]]
-    print(tabulate(df, headers='keys'))
+    return tabulate(df, headers='keys')
+
+def pretty_list_gpus():
+    rows = device_statuses()
+    df = device_table(rows)
+    print(format_table(df))
+
 
 if __name__ == '__main__':
     pretty_list_gpus()
