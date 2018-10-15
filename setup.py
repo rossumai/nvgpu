@@ -10,6 +10,7 @@ setup(name='nvgpu',
       packages=['nvgpu'],
       zip_safe=False,
       install_requires=[
+        'ansi2html',
         'arrow',
         'nvidia-ml-py',
         'pandas',
