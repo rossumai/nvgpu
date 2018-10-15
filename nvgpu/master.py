@@ -1,6 +1,7 @@
 import requests
 from requests import ReadTimeout, ConnectionError
 
+from nvgpu.agent import machine_status
 from nvgpu.list_gpus import format_table, device_table
 
 
@@ -21,6 +22,11 @@ def gather_reports(hosts):
 
 
 def download_report(host):
+    if host == 'self':
+        # Avoid making a nested HTTP request to itself (may cause a deadlock
+        # or timeout if the web app runs in a single thread).
+        return machine_status()
+
     try:
         resp = requests.get(host + '/gpu_status', timeout=5)
         if resp.status_code != 200:
