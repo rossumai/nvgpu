@@ -91,6 +91,10 @@ nvgpu.gpu_info()
 
 ## Web application with agents
 
+There are multiple nodes. Agents take info from GPU and provide it in JSON via
+REST API. Master gathers info from other nodes and displays it in a HTML page.
+Agents can also display their status by default.
+
 ### Agent
 
 ```
@@ -99,7 +103,10 @@ FLASK_APP=nvgpu.webapp flask run --host 0.0.0.0 --port 1080
 
 ### Master
 
-Set agents into a config file:
+Set agents into a config file. Agent is specified either via a URL to a remote
+machine or `'self'` for direct access to local machine. Remove `'self'` if the
+machine itself does not have any GPU. Default is `AGENTS = ['self']`, so that
+agents also display their own status. Set `AGENTS = []` to avoid this.
 
 ```
 # nvgpu_master.cfg
