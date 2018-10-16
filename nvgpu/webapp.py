@@ -8,10 +8,10 @@ all machines in a cluster and showing them on a HTML page). Master instance can
 also act as an agent.
 
 Master:
-NVGPU_CLUSTER_CFG=../nvgpu_master.cfg FLASK_APP=nvgpu/webapp.py flask run --host 0.0.0.0 --port 1080
+NVGPU_CLUSTER_CFG=$(pwd)/nvgpu_master.cfg FLASK_APP=nvgpu.webapp flask run --host 0.0.0.0 --port 1080
 
 Agent:
-FLASK_APP=nvgpu/webapp.py flask run --host 0.0.0.0 --port 1080
+FLASK_APP=nvgpu.webapp flask run --host 0.0.0.0 --port 1080
 """
 
 from ansi2html import Ansi2HTMLConverter

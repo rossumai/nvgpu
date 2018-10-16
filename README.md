@@ -94,7 +94,7 @@ nvgpu.gpu_info()
 ### Agent
 
 ```
-FLASK_APP=/path/to/nvgpu/webapp.py flask run --host 0.0.0.0 --port 1080
+FLASK_APP=nvgpu.webapp flask run --host 0.0.0.0 --port 1080
 ```
 
 ### Master
@@ -112,7 +112,7 @@ AGENTS = [
 ```
 
 ```
-NVGPU_CLUSTER_CFG=/path/to/nvgpu_master.cfg FLASK_APP=/path/to/nvgpu/webapp.py flask run --host 0.0.0.0 --port 1080
+NVGPU_CLUSTER_CFG=/path/to/nvgpu_master.cfg FLASK_APP=nvgpu.webapp flask run --host 0.0.0.0 --port 1080
 ```
 
 Open the master in the web browser: http://node01:1080.
