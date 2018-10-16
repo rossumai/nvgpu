@@ -15,6 +15,10 @@ memory usage, ie. it is OK with Xorg taking a few MB.
 In addition we have a fancy table of GPU with more information taken by
 python binding to NVML.
 
+For easier monitoring of multiple machines it's possible to deploy agents (that
+provide the GPU information in JSON over a REST API) and show the aggregated
+status in a web application.
+
 ## Installing
 
 ```
@@ -85,10 +89,40 @@ nvgpu.gpu_info()
 ]
 ```
 
+## Web application with agents
+
+### Agent
+
+```
+FLASK_APP=/path/to/nvgpu/webapp.py flask run --host 0.0.0.0 --port 1080
+```
+
+### Master
+
+Set agents into a config file:
+
+```
+# nvgpu_master.cfg
+AGENTS = [
+         'self', # node01 - master - direct access without using HTTP
+         'http://node02:1080',
+         'http://node03:1080',
+         'http://node04:1080',
+]
+```
+
+```
+NVGPU_CLUSTER_CFG=/path/to/nvgpu_master.cfg FLASK_APP=/path/to/nvgpu/webapp.py flask run --host 0.0.0.0 --port 1080
+```
+
+Open the master in the web browser: http://node01:1080.
+
 ## Author
 
 - Bohumír Zámečník, [Rossum, Ltd.](https://rossum.ai/)
 - License: MIT
 
 ## TODO
+
+- dockerize the master/agent webapp for easier deployment
 - order GPUs by priority (decreasing power, decreasing free memory)
