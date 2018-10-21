@@ -8,7 +8,7 @@ from nvgpu.list_gpus import format_table, device_table
 def format_reports_to_ansi(hosts, reports):
     def format_report(host, report):
         if 'error' not in report:
-            return '\n'.join([report['hostname'], format_table(device_table(report['gpus']))])
+            return '\n'.join(['%s (%s)' % (host, report['hostname']), format_table(device_table(report['gpus']))])
         else:
             return '\n'.join([host, report['error']])
 
