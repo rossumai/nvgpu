@@ -14,6 +14,7 @@ setup(name='nvgpu',
         'arrow',
         'flask',
         'flask_restful',
+        # works only in Python 2
         'nvidia-ml-py',
         'pandas',
         'psutil',
@@ -36,7 +37,6 @@ setup(name='nvgpu',
         'License :: OSI Approved :: MIT License',
 
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 3',
 
         'Operating System :: POSIX :: Linux',
     ],
