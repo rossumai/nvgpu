@@ -29,11 +29,11 @@ publish:
 docker_build:
 	docker build -t nvgpu .
 
-docker run_nvl:
+docker_run_nvl:
 	nvidia-docker run --rm nvgpu nvl
 
-docker run_agent:
+docker_run_agent:
 	nvidia-docker run --rm -p 1080:80 nvgpu
 
-docker run_master:
+docker_run_master:
 	nvidia-docker run --rm -p 1080:80 -v $(pwd)/nvgpu_master.cfg:/etc/nvgpu.cfg nvgpu
