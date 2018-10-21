@@ -124,6 +124,32 @@ NVGPU_CLUSTER_CFG=/path/to/nvgpu_master.cfg FLASK_APP=nvgpu.webapp flask run --h
 
 Open the master in the web browser: http://node01:1080.
 
+## Installation and running via Docker
+
+For easier deployment of the agent apps we can use Docker.
+
+It needs [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) installed.
+
+```bash
+# build the image
+docker build -t nvgpu .
+
+# run CLI
+nvidia-docker run --rm nvgpu nvl
+
+# run agent
+nvidia-docker run --rm -p 1080:80 nvgpu
+
+# run the master with agents specified in ~/nvgpu_master.cfg
+nvidia-docker run --rm -p 1080:80 -v $(pwd)/nvgpu_master.cfg:/etc/nvgpu.cfg nvgpu
+
+open http://localhost:1080
+```
+
+You can set the containers for automatic startup with `--restart always` option.
+
+Note: Docker containers have some hash as hostname (it's not the host machine hostname).
+
 ## Author
 
 - Bohumír Zámečník, [Rossum, Ltd.](https://rossum.ai/)
@@ -131,5 +157,4 @@ Open the master in the web browser: http://node01:1080.
 
 ## TODO
 
-- dockerize the master/agent webapp for easier deployment
 - order GPUs by priority (decreasing power, decreasing free memory)
