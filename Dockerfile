@@ -6,8 +6,12 @@ MAINTAINER Bohumir Zamecnik (bohumir.zamecnik@rossum.ai)
 # TODO: Use a separate build image and don't put GCC into the final image.
 RUN apt update && apt install -y python-pip python-setuptools python-dev gcc
 
-# TODO: install the nvpgu package from sources, instead of from PyPI
-RUN pip install -U nvgpu wheel
+RUN pip install wheel
+
+# install the app from sources
+WORKDIR /root/nvgpu
+COPY . ./
+RUN pip install --no-cache-dir .
 
 ENV FLASK_APP nvgpu.webapp
 ENV NVGPU_CLUSTER_CFG /etc/nvgpu.cfg
