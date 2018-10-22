@@ -1,0 +1,15 @@
+[Unit]
+Description=NVGPU agent
+
+[Service]
+User=nvgpu
+Group=nvgpu
+Environment=NVGPU_CLUSTER_CFG=/etc/nvgpu.conf
+Environment=FLASK_APP=nvgpu.webapp
+Environment=FLASK_HOST=0.0.0.0
+Environment=FLASK_PORT=1080
+ExecStart=/bin/bash -c "/usr/local/bin/flask run --host $FLASK_HOST --port $FLASK_PORT"
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

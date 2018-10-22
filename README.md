@@ -21,15 +21,23 @@ status in a web application.
 
 ## Installing
 
+For a user:
+
+```bash
+pip install -U nvgpu
 ```
-pip install nvgpu
+
+or to the system:
+
+```bash
+sudo -H pip install -U nvgpu
 ```
 
 ## Usage examples
 
 Command-line interface:
 
-```
+```bash
 # grab all available GPUs
 CUDA_VISIBLE_DEVICES=$(nvgpu available)
 
@@ -60,7 +68,7 @@ $ nvl
 
 Python API:
 
-```
+```python
 import nvgpu
 
 nvgpu.available_gpus()
@@ -97,7 +105,7 @@ Agents can also display their status by default.
 
 ### Agent
 
-```
+```bash
 FLASK_APP=nvgpu.webapp flask run --host 0.0.0.0 --port 1080
 ```
 
@@ -118,37 +126,60 @@ AGENTS = [
 ]
 ```
 
-```
+```bash
 NVGPU_CLUSTER_CFG=/path/to/nvgpu_master.cfg FLASK_APP=nvgpu.webapp flask run --host 0.0.0.0 --port 1080
 ```
 
 Open the master in the web browser: http://node01:1080.
 
-## Installation and running via Docker
+## Installing as a service
 
-For easier deployment of the agent apps we can use Docker.
-
-It needs [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) installed.
+On Ubuntu with `systemd` we can install the agents/master as as service to be
+ran automatically on system start.
 
 ```bash
-# build the image
-docker build -t nvgpu .
-
-# run CLI
-nvidia-docker run --rm nvgpu nvl
-
-# run agent
-nvidia-docker run --rm -p 1080:80 nvgpu
-
-# run the master with agents specified in ~/nvgpu_master.cfg
-nvidia-docker run --rm -p 1080:80 -v $(pwd)/nvgpu_master.cfg:/etc/nvgpu.cfg nvgpu
-
-open http://localhost:1080
+# create an unprivileged system user
+sudo useradd -r nvgpu
 ```
 
-You can set the containers for automatic startup with `--restart always` option.
+Copy [nvgpu-agent.service](nvgpu-agent.service) to:
 
-Note: Docker containers have some hash as hostname (it's not the host machine hostname).
+```bash
+sudo vi /etc/systemd/system/nvgpu-agent.service
+```
+
+Set agents to the configuration file for the master:
+
+```bash
+sudo vi /etc/nvgpu.conf
+```
+
+```python
+AGENTS = [
+         # direct access without using HTTP
+         'self',
+         'http://node01:1080',
+         'http://node02:1080',
+         'http://node03:1080',
+         'http://node04:1080',
+]
+```
+
+Set up and start the service:
+
+```bash
+# enable for automatic startup at boot
+sudo systemctl enable nvgpu-agent.service
+# start
+sudo systemctl start nvgpu-agent.service 
+# check the status
+sudo systemctl status nvgpu-agent.service
+```
+
+```bash
+# check the service
+open http://localhost:1080
+```
 
 ## Author
 
