@@ -4,6 +4,7 @@ import arrow
 import pandas as pd
 import psutil
 import pynvml as nv
+import six
 from tabulate import tabulate
 from termcolor import colored
 
@@ -13,9 +14,15 @@ from nvgpu.nvml import nvml_context
 def device_status(device_index):
     handle = nv.nvmlDeviceGetHandleByIndex(device_index)
     device_name = nv.nvmlDeviceGetName(handle)
+    if six.PY3:
+        device_name = device_name.decode('UTF-8')
     nv_procs = nv.nvmlDeviceGetComputeRunningProcesses(handle)
     utilization = nv.nvmlDeviceGetUtilizationRates(handle).gpu
-    clock_mhz = nv.nvmlDeviceGetClock(handle, nv.NVML_CLOCK_SM, 0)
+    if six.PY3:
+        clock_mhz = nv.nvmlDeviceGetClockInfo(handle, nv.NVML_CLOCK_SM)
+    else:
+        # old API in nvidia-ml-py
+        clock_mhz = nv.nvmlDeviceGetClock(handle, nv.NVML_CLOCK_SM, 0)
     temperature = nv.nvmlDeviceGetTemperature(handle, nv.NVML_TEMPERATURE_GPU)
     pids = []
     users = []
