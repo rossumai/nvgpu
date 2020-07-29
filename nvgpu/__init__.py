@@ -10,7 +10,11 @@ def gpu_info():
     gpu_count = len(gpus)
 
     lines = _run_cmd(['nvidia-smi'])
-    selected_lines = lines[7:7 + 3 * gpu_count]
+    cuda_version = float(lines[2].split('CUDA Version: ')[1].split(' ')[0])
+    if cuda_version < 11:
+        selected_lines = lines[7:7 + 3 * gpu_count]
+    else:
+        selected_lines = lines[8:8 + 4 * gpu_count]
     for i in range(gpu_count):
         mem_used, mem_total = [int(m.strip().replace('MiB', '')) for m in
                                selected_lines[3 * i + 1].split('|')[2].strip().split('/')]
