@@ -1,4 +1,5 @@
 import argparse
+import time
 
 import nvgpu
 from nvgpu.list_gpus import pretty_list_gpus
@@ -12,6 +13,8 @@ def parse_args():
     parser_available.add_argument('-l', '--limit', default=None, type=int,
         help='Max number of GPUs')
     parser_list = subparsers.add_parser('list')
+    parser_list.add_argument('-l', '--loop', nargs='?', const=1, type=float,
+        help='Probe until Ctrl+C at specified second interval.')
 
     return parser.parse_args()
 
@@ -23,7 +26,16 @@ def main():
             gpus = gpus[:args.limit]
         print(','.join(gpus))
     elif args.command == 'list':
-        pretty_list_gpus()
+        if args.loop:
+            while True:
+                try:
+                    pretty_list_gpus()
+                    time.sleep(args.loop)
+                except KeyboardInterrupt:
+                    break
+        else:
+            pretty_list_gpus()
+
 
 if __name__ == '__main__':
     main()
