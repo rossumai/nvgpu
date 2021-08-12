@@ -5,7 +5,8 @@ import subprocess
 
 def gpu_info():
     gpus = [line for line in _run_cmd(['nvidia-smi', '-L']) if line]
-    gpu_infos = [re.match('GPU ([0-9]+): ([^(]+) \(UUID: ([^)]+)\)', gpu).groups() for gpu in gpus]
+    gpu_infos = [re.match('GPU ([0-9]+): ([^(]+) \(UUID: ([^)]+)\)', gpu) for gpu in gpus]
+    gpu_infos = [info.groups() for info in gpu_infos if info is not None]
     gpu_infos = [dict(zip(['index', 'type', 'uuid'], info)) for info in gpu_infos]
     gpu_count = len(gpus)
 

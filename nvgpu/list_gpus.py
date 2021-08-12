@@ -17,7 +17,11 @@ def device_status(device_index):
     if six.PY3:
         device_name = device_name.decode('UTF-8')
     nv_procs = nv.nvmlDeviceGetComputeRunningProcesses(handle)
-    utilization = nv.nvmlDeviceGetUtilizationRates(handle).gpu
+    try:
+        utilization = nv.nvmlDeviceGetUtilizationRates(handle).gpu
+    except nv.NVMLError:
+        utilization = 'N/A'
+
     if six.PY3:
         clock_mhz = nv.nvmlDeviceGetClockInfo(handle, nv.NVML_CLOCK_SM)
     else:
@@ -49,7 +53,8 @@ def device_status(device_index):
         'clock_mhz': clock_mhz,
         'temperature': temperature,
         'cmd': cmd,
-        }
+    }
+
 
 def parse_cmd_roughly(args):
     cmdline = ' '.join(args)
@@ -61,16 +66,19 @@ def parse_cmd_roughly(args):
     else:
         return cmdline if len(cmdline) <= 25 else cmdline[:25] + '...'
 
+
 def device_statuses():
     with nvml_context():
         device_count = nv.nvmlDeviceGetCount()
         return [device_status(device_index) for device_index in range(device_count)]
+
 
 def device_table(rows):
     df = pd.DataFrame(rows, columns=[
         'is_available', 'type', 'utilization', 'clock_mhz', 'temperature', 'users', 'running_since', 'pids', 'cmd'
     ])
     return df
+
 
 def format_table(df):
     def make_status(row):
@@ -80,6 +88,7 @@ def format_table(df):
             return '[ ]'
         else:
             return '[~]'
+
     def color_by_status(status):
         if status == '[ ]':
             return 'green'
@@ -91,7 +100,7 @@ def format_table(df):
             raise ValueError(status)
     df['status'] = df.apply(make_status, axis=1)
     df['color'] = df['status'].apply(color_by_status)
-    df['util.'] = df['utilization'].apply(lambda u: '%03s %%' % u)
+    df['util.'] = df['utilization'].apply(lambda u: '%03s %%' % u if u != 'N/A' else u)
     df['MHz'] = df['clock_mhz']
     df['temp.'] = df['temperature']
     df['since'] = df['running_since']
@@ -102,6 +111,7 @@ def format_table(df):
         df[col] = [colored(row[col], row['color']) for i, row in df.iterrows()]
     df = df[[col for col in cols if col not in ['color']]]
     return tabulate(df, headers='keys')
+
 
 def pretty_list_gpus():
     rows = device_statuses()
