@@ -20,7 +20,7 @@ def device_status(device_index):
     try:
         utilization = nv.nvmlDeviceGetUtilizationRates(handle).gpu
     except nv.NVMLError:
-        utilization = 'N/A'
+        utilization = None
 
     if six.PY3:
         clock_mhz = nv.nvmlDeviceGetClockInfo(handle, nv.NVML_CLOCK_SM)
@@ -100,7 +100,7 @@ def format_table(df):
             raise ValueError(status)
     df['status'] = df.apply(make_status, axis=1)
     df['color'] = df['status'].apply(color_by_status)
-    df['util.'] = df['utilization'].apply(lambda u: '%03s %%' % u if u != 'N/A' else u)
+    df['util.'] = df['utilization'].apply(lambda u: '%03s %%' % u if u is not None else 'N/A')
     df['MHz'] = df['clock_mhz']
     df['temp.'] = df['temperature']
     df['since'] = df['running_since']
