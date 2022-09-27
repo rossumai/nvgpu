@@ -28,6 +28,7 @@ def device_status(device_index):
         # old API in nvidia-ml-py
         clock_mhz = nv.nvmlDeviceGetClock(handle, nv.NVML_CLOCK_SM, 0)
     temperature = nv.nvmlDeviceGetTemperature(handle, nv.NVML_TEMPERATURE_GPU)
+    memory = nv.nvmlDeviceGetMemoryInfo(handle)
     pids = []
     users = []
     dates = []
@@ -50,6 +51,7 @@ def device_status(device_index):
         'users': ','.join(users),
         'running_since': arrow.get(min(dates)).humanize() if len(dates) > 0 else None,
         'utilization': utilization,
+        'memory': memory,
         'clock_mhz': clock_mhz,
         'temperature': temperature,
         'cmd': cmd,
@@ -75,7 +77,7 @@ def device_statuses():
 
 def device_table(rows):
     df = pd.DataFrame(rows, columns=[
-        'is_available', 'type', 'utilization', 'clock_mhz', 'temperature', 'users', 'running_since', 'pids', 'cmd'
+        'is_available', 'type', 'utilization', 'memory', 'clock_mhz', 'temperature', 'users', 'running_since', 'pids', 'cmd'
     ])
     return df
 
@@ -101,12 +103,13 @@ def format_table(df):
     df['status'] = df.apply(make_status, axis=1)
     df['color'] = df['status'].apply(color_by_status)
     df['util.'] = df['utilization'].apply(lambda u: '%03s %%' % u if u is not None else 'N/A')
+    df['mem. used'] = df['memory'].apply(lambda m: str(round(m.used / 1000000000., 2)) + "GB")
     df['MHz'] = df['clock_mhz']
     df['temp.'] = df['temperature']
     df['since'] = df['running_since']
     for col in ['since', 'cmd']:
         df[col] = df[col].apply(lambda v: v if v is not None else '')
-    cols = ['status', 'type', 'util.', 'temp.', 'MHz', 'users', 'since', 'pids', 'cmd']
+    cols = ['status', 'type', 'util.', 'mem. used', 'temp.', 'MHz', 'users', 'since', 'pids', 'cmd']
     for col in cols:
         df[col] = [colored(row[col], row['color']) for i, row in df.iterrows()]
     df = df[[col for col in cols if col not in ['color']]]
