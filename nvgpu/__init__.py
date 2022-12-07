@@ -22,11 +22,11 @@ def gpu_info():
         mem_used, mem_total = [int(m.strip().replace('MiB', '')) for m in
                                selected_lines[line_distance * i + 1].split('|')[2].strip().split('/')]
         clock, temp, _, pow_used, pow_total = selected_lines[line_distance * i + 1].split('|')[1].split()
+        
         gpu_infos[i]['mem_used'] = mem_used
         gpu_infos[i]['mem_total'] = mem_total
         gpu_infos[i]['mem_used_percent'] = 100. * mem_used / mem_total
 
-        temp = [int(selected_lines[1])]
         gpu_infos[i]['clock'] = clock
         gpu_infos[i]['temp'] = temp
         gpu_infos[i]['pow_used'] = pow_used
