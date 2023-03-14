@@ -30,7 +30,7 @@ def gpu_info():
 
 def _run_cmd(cmd):
     output = subprocess.check_output(cmd)
-    if six.PY3:
+    if isinstance(output, bytes):
         output = output.decode('UTF-8')
     return output.split('\n')
 

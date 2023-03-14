@@ -14,7 +14,7 @@ from nvgpu.nvml import nvml_context
 def device_status(device_index):
     handle = nv.nvmlDeviceGetHandleByIndex(device_index)
     device_name = nv.nvmlDeviceGetName(handle)
-    if six.PY3:
+    if isinstance(device_name, bytes):
         device_name = device_name.decode('UTF-8')
     nv_procs = nv.nvmlDeviceGetComputeRunningProcesses(handle)
     try:
