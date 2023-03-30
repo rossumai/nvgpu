@@ -1,4 +1,6 @@
 from setuptools import setup
+import pypandoc
+pypandoc.download_pandoc()
 
 setup(name='nvgpu',
     version='0.10.0',
@@ -24,8 +26,8 @@ setup(name='nvgpu',
         'termcolor',
         'tabulate',
     ],
-    setup_requires=['setuptools-markdown'],
-    long_description_markdown_filename='README.md',
+    setup_requires=['setuptools-markdown', 'pypandoc'],
+    long_description = pypandoc.convert_text('README.md', to='rst', format='md'),
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         # How mature is this project? Common values are
