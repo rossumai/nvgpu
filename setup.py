@@ -1,5 +1,11 @@
 from setuptools import setup
 
+
+def read_file(path):
+    with open(path, 'r') as f:
+        return f.read()
+
+
 setup(name='nvgpu',
     version='0.10.0',
     description='NVIDIA GPU tools',
@@ -24,8 +30,8 @@ setup(name='nvgpu',
         'termcolor',
         'tabulate',
     ],
-    setup_requires=['setuptools-markdown'],
-    long_description_markdown_filename='README.md',
+    long_description=read_file('README.md'),
+    long_description_content_type="text/markdown",
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         # How mature is this project? Common values are
