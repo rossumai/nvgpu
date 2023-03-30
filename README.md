@@ -24,13 +24,13 @@ status in a web application.
 For a user:
 
 ```bash
-pip install -U nvgpu
+pip install nvgpu
 ```
 
 or to the system:
 
 ```bash
-sudo -H pip install -U nvgpu
+sudo -H pip install nvgpu
 ```
 
 ## Usage examples
