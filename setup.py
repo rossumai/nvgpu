@@ -2,12 +2,12 @@ from setuptools import setup
 
 
 def read_file(path):
-    with open(path, 'r') as f:
+    with open(path, 'r', encoding='utf-8') as f:
         return f.read()
 
 
 setup(name='nvgpu',
-    version='0.10.0',
+    version='0.10.1',
     description='NVIDIA GPU tools',
     url='https://github.com/rossumai/nvgpu',
     author='Bohumir Zamecnik, Rossum',
