@@ -7,6 +7,7 @@ import pynvml as nv
 import six
 from tabulate import tabulate
 from termcolor import colored
+import warnings
 
 from nvgpu.nvml import nvml_context
 
@@ -44,6 +45,10 @@ def device_status(device_index):
                 cmd = parse_cmd_roughly(proc.cmdline())
         except psutil.NoSuchProcess:
             users.append('?')
+        except psutil.AccessDenied:
+            users.append('?')
+            if hasattr(psutil, 'WINDOWS'):
+                warnings.warn('Access to process ID info denied for process {}. If required, run as administrator.'.format(pid))
     return {
         'type': device_name,
         'is_available': len(pids) == 0,
